@@ -1,0 +1,165 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class State {
+
+    int[][] blocks = new int[3][3];
+    int[][] goal = new int[3][3];
+    int fVal;
+    int gVal;
+    int hVal;
+    int noOfSuccesors;
+    int spaceIndex;
+    int spaceX;
+    int spaceY;
+
+    public State(int[][] blocks, int[][] goal, int gVal) {
+        super();
+        this.blocks = getBlocks(blocks);
+        this.goal = goal;
+        this.gVal = gVal;
+        this.spaceIndex = getSpaceIndex();
+        this.noOfSuccesors = getNoOfSuccesors();
+        this.hVal = getManhattan();
+        this.fVal = this.gVal + this.hVal;
+    }
+
+    public State() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    public int[][] getBlocks(int[][] blocks) {
+        int[][] temp = new int[3][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                temp[i][j] = blocks[i][j];
+            }
+        }
+
+        return temp;
+    }
+
+    public int getSpaceIndex() {
+        int i, j;
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+                if (this.blocks[i][j] == 0) {
+                    this.spaceX = i;
+                    this.spaceY = j;
+                    this.spaceIndex = i * 10 + j;
+                    return i * 10 + j;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int getNoOfSuccesors() {
+        if (this.spaceIndex == 0 || this.spaceIndex == 2 || this.spaceIndex == 20 || this.spaceIndex == 22) {
+            this.noOfSuccesors = 2;
+            return 2;
+        } else if (this.spaceIndex == 11) {
+            this.noOfSuccesors = 4;
+            return 4;
+        } else {
+            this.noOfSuccesors = 3;
+            return 3;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "State [blocks=" + blocks[0][0] + blocks[0][1] +blocks[0][2] + blocks[1][0] + blocks[1][1] + blocks[1][2] + blocks[2][0] + blocks[2][1] + blocks[2][2] + ", fVal=" + fVal + ", gVal=" + gVal + ", hVal=" + hVal
+                + ", noOfSuccesors=" + noOfSuccesors + ", spaceIndex=" + spaceIndex + ", spaceX=" + spaceX
+                + ", spaceY=" + spaceY + "]";
+    }
+
+    public State getNewState(State state, int x, int y) {
+        // TODO Auto-generated method stub
+        int[][] inparr = state.blocks.clone();
+        State state1 = new State(inparr,this.goal, this.gVal + 1);
+        int z = state1.blocks[state1.spaceX + x][state1.spaceY + y];
+        state1.blocks[state1.spaceX + x][state1.spaceY + y] = 0;
+        state1.blocks[state1.spaceX][state1.spaceY] = z;
+        State state2 = new State(state1.blocks,this.goal, this.gVal + 1);
+        return state2;
+    }
+
+    public List<State> getSuccesorStates(State state) {
+        // TODO Auto-generated method stub
+        List<State> succesorStates = new ArrayList<State>();
+        if (state.noOfSuccesors == 2) {
+            if (state.spaceIndex == 0) {
+                succesorStates.add(getNewState(state, 0, 1));
+                succesorStates.add(getNewState(state, 1, 0));
+            } else if (state.spaceIndex == 2) {
+                succesorStates.add(getNewState(state, 0, 1));
+                succesorStates.add(getNewState(state, -1, 0));
+            } else if (state.spaceIndex == 20) {
+                succesorStates.add(getNewState(state, 0, 1));
+                succesorStates.add(getNewState(state, -1, 0));
+            } else if (state.spaceIndex == 22) {
+                succesorStates.add(getNewState(state, 0, -1));
+                succesorStates.add(getNewState(state, -1, 0));
+            }
+        } else if (state.noOfSuccesors == 4) {
+
+            succesorStates.add(getNewState(state, 0, -1));
+            succesorStates.add(getNewState(state, 1, 0));
+            succesorStates.add(getNewState(state, 0, 1));
+            succesorStates.add(getNewState(state, -1, 0));
+
+        } else {
+            if (state.spaceIndex == 1) {
+                succesorStates.add(getNewState(state, 0, 1));
+                succesorStates.add(getNewState(state, 0, -1));
+                succesorStates.add(getNewState(state, 1, 0));
+            } else if (state.spaceIndex == 10) {
+                succesorStates.add(getNewState(state, 0, 1));
+                succesorStates.add(getNewState(state, -1, 0));
+                succesorStates.add(getNewState(state, 1, 0));
+            } else if (state.spaceIndex == 12) {
+                succesorStates.add(getNewState(state, 0, 1));
+                succesorStates.add(getNewState(state, 0, -1));
+                succesorStates.add(getNewState(state, -1, 0));
+            } else if (state.spaceIndex == 21) {
+                succesorStates.add(getNewState(state, 0, 1));
+                succesorStates.add(getNewState(state, 0, -1));
+                succesorStates.add(getNewState(state, -1, 0));
+            }
+        }
+        return succesorStates;
+
+    }
+    
+    public int getManhattan() {
+        int h = 0;
+
+        HashMap<Integer, String> map1 = new HashMap<Integer, String>();
+        HashMap<Integer, String> map2 = new HashMap<Integer, String>();
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+
+                map1.put(this.blocks[i][j], i + "" + j);
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+
+                map2.put(this.goal[i][j], i + "" + j);
+            }
+        }
+
+        for (int i = 0; i <= 8; i++) {
+            int point1 = Integer.parseInt(map1.get(i));
+            int point2 = Integer.parseInt(map2.get(i));
+            h += Math.abs(point1 / 10 - point2 / 10) + Math.abs(point1 % 10 - point2 % 10);
+        }
+        return h;
+    }
+
+}
