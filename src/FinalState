@@ -161,5 +161,22 @@ public class State {
         }
         return h;
     }
+    
+     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(blocks);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof State){
+            State other = (State) obj;
+            return Arrays.equals(blocks, other.blocks);
+        }
+        return false;
+    }
 
 }
