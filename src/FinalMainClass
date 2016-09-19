@@ -1,0 +1,45 @@
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
+
+public class MainClass {
+    
+    
+    public static void main(String args[]) {
+        
+        
+        int arr[][] = {{1,2,3},{5,0,6},{4,7,8}};
+        int goal[][] = {{1,2,3},{4,5,6},{7,8,0}};
+        
+        PriorityQueue<State> stateQueue = new PriorityQueue<State>(100, new Comparator<State>() {
+            public int compare(State one, State two) {
+                return one.fVal - two.fVal;
+            }
+        });
+        
+        
+        State inp = new State(arr,goal,0);
+        stateQueue.add(inp);
+        int result =0;
+        State presentState = new State();
+        while(result != 1){
+            presentState = stateQueue.poll();
+            if(Arrays.deepEquals(presentState.blocks, goal)) {
+                System.out.println("Initial state is goal state");
+                result = 1;
+            }else{
+                List<State> out = new ArrayList<State>();
+                out.addAll(presentState.getSuccesorStates(presentState));
+                System.out.println("before" + stateQueue);
+                stateQueue.addAll(out);
+                System.out.println("after" + stateQueue);
+            }
+        }
+        
+        System.out.println(presentState);
+    }
+
+}
