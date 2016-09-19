@@ -1,0 +1,118 @@
+mport java.util.*;
+
+public class EightPuzzleAstar {
+
+    public static void main(String args[]) {
+
+        int[][] blocks = new int[3][3];
+        int[][] goal = new int[3][3];
+        int i, j;
+        Scanner in = new Scanner(System.in);
+
+        // Reading Initial State
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+
+                blocks[i][j] = in.nextInt();
+
+            }
+        }
+
+        // Reading Goal State
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+
+                goal[i][j] = in.nextInt();
+
+            }
+        }
+        in.close();
+
+        if (Arrays.deepEquals(blocks, goal)) {
+            System.out.println("Initial state is goal state");
+        }
+
+        else {
+            
+            Board b=new Board( blocks, goal);
+            System.out.println(b.manhattan());
+            //State s=new State
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dfjasdlkjfalskdjfalksdjflaksdjflkasjfaklsdjfalksdjflkas
+
+
+import java.util.HashMap;
+
+public class Board {
+
+    private int[][] blocks;
+    static private int[][] goal;
+    private int i, j, N;
+
+    public  Board(int[][] blocks, int [][] goal) {
+        this.blocks = blocks;
+        this.goal=goal;
+        N = blocks.length;
+    }
+
+
+
+    public int manhattan() {
+        int h = 0;
+
+        HashMap<Integer, String> map1 = new HashMap<Integer, String>();
+        HashMap<Integer, String> map2 = new HashMap<Integer, String>();
+
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+
+                map1.put(blocks[i][j], i + "" + j);
+            }
+        }
+
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+
+                map2.put(goal[i][j], i + "" + j);
+            }
+        }
+
+        for (i = 0; i <= 8; i++) {
+            int point1 = Integer.parseInt(map1.get(i));
+            int point2 = Integer.parseInt(map2.get(i));
+            h += Math.abs(point1 / 10 - point2 / 10) + Math.abs(point1 % 10 - point2 % 10);
+        }
+        return h;
+    }
+}
+
+
+
+
+
+
+
+
+
+989859238593948293489234523
+
+
+
