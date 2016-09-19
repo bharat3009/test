@@ -1,9 +1,14 @@
 
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 public class MainClass {
     
@@ -20,6 +25,8 @@ public class MainClass {
             }
         });
         
+        Set<State> clearState = new HashSet<State>();
+        
         
         State inp = new State(arr,goal,0);
         stateQueue.add(inp);
@@ -31,8 +38,12 @@ public class MainClass {
                 System.out.println("Initial state is goal state");
                 result = 1;
             }else{
+                clearState.add(presentState);
                 List<State> out = new ArrayList<State>();
                 out.addAll(presentState.getSuccesorStates(presentState));
+                System.out.println("before clear" + out.size());
+                out  = removeClearState(out,clearState);
+                System.out.println("afer clear" + out.size());
                 System.out.println("before" + stateQueue);
                 stateQueue.addAll(out);
                 System.out.println("after" + stateQueue);
@@ -40,6 +51,18 @@ public class MainClass {
         }
         
         System.out.println(presentState);
+    }
+
+    private static List<State> removeClearState(List<State> out, Set<State> clearState) {
+        // TODO Auto-generated method stub
+        Iterator<State> itr = out.iterator();
+        while(itr.hasNext()) {
+           if( clearState.contains(itr)) {
+               out.remove(itr);
+           }
+        }
+        return out;
+        
     }
 
 }
