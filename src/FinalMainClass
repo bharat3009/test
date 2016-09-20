@@ -1,68 +1,63 @@
-
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
 public class MainClass {
     
-    
     public static void main(String args[]) {
         
         
-        int arr[][] = {{1,2,3},{5,0,6},{4,7,8}};
-        int goal[][] = {{1,2,3},{4,5,6},{7,8,0}};
+        //int arr[][] = {{2,8,3},{1,6,4},{7,0,5}};
+        //int goal[][] = {{1,2,3},{8,6,4},{7,5,0}};
+        
+        int arr[][] = {{5,4,0},{6,1,8},{7,3,2}};
+        int goal[][] = {{1,2,3},{4,0,5},{6,7,8}};
+        
+        //int arr[][] = {{7,2,4},{5,0,6},{8,3,1}};
+       // int goal[][] = {{0,1,2},{3,4,5},{6,7,8}};
         
         PriorityQueue<State> stateQueue = new PriorityQueue<State>(100, new Comparator<State>() {
             public int compare(State one, State two) {
-                return one.fVal - two.fVal;
+                return (one.fVal != two.fVal) ? (one.fVal - two.fVal) : one.noOfSuccesors - two.noOfSuccesors;
             }
         });
-        
-        Set<State> clearState = new HashSet<State>();
-        
-        
+        Set<State> clearState = new HashSet<State>();      
         State inp = new State(arr,goal,0);
         stateQueue.add(inp);
         int result =0;
         State presentState = new State();
         while(result != 1){
             presentState = stateQueue.poll();
-            if(Arrays.deepEquals(presentState.blocks, goal)) {
-                System.out.println("Initial state is goal state");
+            if(Arrays.deepEquals(presentState.blocks, goal)) { 
                 result = 1;
             }else{
-                clearState.add(presentState);
                 List<State> out = new ArrayList<State>();
+                clearState.add(presentState);
                 out.addAll(presentState.getSuccesorStates(presentState));
-                System.out.println("before clear" + out.size());
-                out  = removeClearState(out,clearState);
-                System.out.println("afer clear" + out.size());
-                System.out.println("before" + stateQueue);
-                stateQueue.addAll(out);
-                System.out.println("after" + stateQueue);
+                out = removeClearState(out,clearState);
+                stateQueue.addAll(out); 
             }
         }
         
-        System.out.println(presentState);
+        System.out.println(clearState.size());
+        System.out.println(clearState);
     }
 
-    private static List<State> removeClearState(List<State> out, Set<State> clearState) {
-        // TODO Auto-generated method stub
-        Iterator<State> itr = out.iterator();
-        while(itr.hasNext()) {
-           if( clearState.contains(itr)) {
-               out.remove(itr);
-           }
-        }
-        return out;
-        
-    }
+	private static List<State> removeClearState(List<State> out, Set<State> clearState) {
+		List<State> out1 = new ArrayList<State>();
+		out1.addAll(out);
+		// TODO Auto-generated method stub
+		for( State s : out1) {
+			if(clearState.contains(s)){
+				out.remove(s);
+			}
+		}
+		return out;
+		
+	}
 
 }
