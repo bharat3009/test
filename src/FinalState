@@ -13,6 +13,7 @@ public class State {
     int spaceIndex;
     int spaceX;
     int spaceY;
+    String blockString ;
 
     public State(int[][] blocks, int[][] goal, int gVal) {
         super();
@@ -23,9 +24,47 @@ public class State {
         this.noOfSuccesors = getNoOfSuccesors();
         this.hVal = getManhattan();
         this.fVal = this.gVal + this.hVal;
+        this.blockString = getBlockString();
+        
     }
 
-    public State() {
+    public String getBlockString() {
+		// TODO Auto-generated method stub
+    	String temp = new String();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                temp = temp + "" + this.blocks[i][j];
+            }
+        }
+		return temp;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((blockString == null) ? 0 : blockString.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		State other = (State) obj;
+		if (blockString == null) {
+			if (other.blockString != null)
+				return false;
+		} else if (!blockString.equals(other.blockString))
+			return false;
+		return true;
+	}
+
+	public State() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -41,6 +80,7 @@ public class State {
         return temp;
     }
 
+    //Calculating the position of space
     public int getSpaceIndex() {
         int i, j;
         for (i = 0; i < 3; i++) {
@@ -56,6 +96,7 @@ public class State {
         return 0;
     }
 
+    //Calculating Number 
     public int getNoOfSuccesors() {
         if (this.spaceIndex == 0 || this.spaceIndex == 2 || this.spaceIndex == 20 || this.spaceIndex == 22) {
             this.noOfSuccesors = 2;
@@ -71,9 +112,9 @@ public class State {
 
     @Override
     public String toString() {
-        return "State [blocks=" + blocks[0][0] + blocks[0][1] +blocks[0][2] + blocks[1][0] + blocks[1][1] + blocks[1][2] + blocks[2][0] + blocks[2][1] + blocks[2][2] + ", fVal=" + fVal + ", gVal=" + gVal + ", hVal=" + hVal
-                + ", noOfSuccesors=" + noOfSuccesors + ", spaceIndex=" + spaceIndex + ", spaceX=" + spaceX
-                + ", spaceY=" + spaceY + "]";
+    	
+        return "\n" + blocks[0][0] + " " + blocks[0][1] + " " + blocks[0][2] + "\n" + blocks[1][0]  + " " + blocks[1][1] + " " + blocks[1][2] + "\n" + blocks[2][0] + " " + blocks[2][1] + " "+ 
+        		blocks[2][2] + "\n" + " fVal=" + fVal + " gVal=" + gVal + " hVal=" + hVal + "\n";
     }
 
     public State getNewState(State state, int x, int y) {
@@ -95,8 +136,8 @@ public class State {
                 succesorStates.add(getNewState(state, 0, 1));
                 succesorStates.add(getNewState(state, 1, 0));
             } else if (state.spaceIndex == 2) {
-                succesorStates.add(getNewState(state, 0, 1));
-                succesorStates.add(getNewState(state, -1, 0));
+                succesorStates.add(getNewState(state, 0, -1));
+                succesorStates.add(getNewState(state, 1, 0));
             } else if (state.spaceIndex == 20) {
                 succesorStates.add(getNewState(state, 0, 1));
                 succesorStates.add(getNewState(state, -1, 0));
@@ -121,7 +162,7 @@ public class State {
                 succesorStates.add(getNewState(state, -1, 0));
                 succesorStates.add(getNewState(state, 1, 0));
             } else if (state.spaceIndex == 12) {
-                succesorStates.add(getNewState(state, 0, 1));
+                succesorStates.add(getNewState(state, 1, 0));
                 succesorStates.add(getNewState(state, 0, -1));
                 succesorStates.add(getNewState(state, -1, 0));
             } else if (state.spaceIndex == 21) {
@@ -133,7 +174,8 @@ public class State {
         return succesorStates;
 
     }
-    
+  
+    // Calculating Manhattan distance
     public int getManhattan() {
         int h = 0;
 
@@ -154,29 +196,12 @@ public class State {
             }
         }
 
-        for (int i = 0; i <= 8; i++) {
+        for (int i = 1; i <= 8; i++) {
             int point1 = Integer.parseInt(map1.get(i));
             int point2 = Integer.parseInt(map2.get(i));
             h += Math.abs(point1 / 10 - point2 / 10) + Math.abs(point1 % 10 - point2 % 10);
         }
         return h;
-    }
-    
-     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode(blocks);
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof State){
-            State other = (State) obj;
-            return Arrays.equals(blocks, other.blocks);
-        }
-        return false;
     }
 
 }
