@@ -14,8 +14,9 @@ public class State {
     int spaceX;
     int spaceY;
     String blockString ;
+    String parentBlock;
 
-    public State(int[][] blocks, int[][] goal, int gVal) {
+    public State(int[][] blocks, int[][] goal, int gVal, String parentBlock) {
         super();
         this.blocks = getBlocks(blocks);
         this.goal = goal;
@@ -25,46 +26,46 @@ public class State {
         this.hVal = getManhattan();
         this.fVal = this.gVal + this.hVal;
         this.blockString = getBlockString();
-        
+        this.parentBlock = parentBlock;
     }
 
     public String getBlockString() {
-		// TODO Auto-generated method stub
-    	String temp = new String();
+        // TODO Auto-generated method stub
+        String temp = new String();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 temp = temp + "" + this.blocks[i][j];
             }
         }
-		return temp;
-	}
+        return temp;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((blockString == null) ? 0 : blockString.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((blockString == null) ? 0 : blockString.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		State other = (State) obj;
-		if (blockString == null) {
-			if (other.blockString != null)
-				return false;
-		} else if (!blockString.equals(other.blockString))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        State other = (State) obj;
+        if (blockString == null) {
+            if (other.blockString != null)
+                return false;
+        } else if (!blockString.equals(other.blockString))
+            return false;
+        return true;
+    }
 
-	public State() {
+    public State() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -112,19 +113,19 @@ public class State {
 
     @Override
     public String toString() {
-    	
+        
         return "\n" + blocks[0][0] + " " + blocks[0][1] + " " + blocks[0][2] + "\n" + blocks[1][0]  + " " + blocks[1][1] + " " + blocks[1][2] + "\n" + blocks[2][0] + " " + blocks[2][1] + " "+ 
-        		blocks[2][2] + "\n" + " fVal=" + fVal + " gVal=" + gVal + " hVal=" + hVal + "\n";
+                blocks[2][2] + "\t" + " fVal=" + fVal + " gVal=" + gVal + " hVal=" + hVal +  "\n";
     }
 
     public State getNewState(State state, int x, int y) {
         // TODO Auto-generated method stub
         int[][] inparr = state.blocks.clone();
-        State state1 = new State(inparr,this.goal, this.gVal + 1);
+        State state1 = new State(inparr,this.goal, this.gVal + 1,"");
         int z = state1.blocks[state1.spaceX + x][state1.spaceY + y];
         state1.blocks[state1.spaceX + x][state1.spaceY + y] = 0;
         state1.blocks[state1.spaceX][state1.spaceY] = z;
-        State state2 = new State(state1.blocks,this.goal, this.gVal + 1);
+        State state2 = new State(state1.blocks,this.goal, this.gVal + 1,state.blockString);
         return state2;
     }
 
