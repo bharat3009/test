@@ -1,3 +1,5 @@
+package com.example;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -11,28 +13,31 @@ public class MainClass {
     public static void main(String args[]) {
         
         
-        //int arr[][] = {{2,8,3},{1,6,4},{7,0,5}};
-        //int goal[][] = {{1,2,3},{8,6,4},{7,5,0}};
+        /*int arr[][] = {{2,8,3},{1,6,4},{7,0,5}};
+        int goal[][] = {{1,2,3},{8,6,4},{7,5,0}};*/
         
-        int arr[][] = {{5,4,0},{6,1,8},{7,3,2}};
-        int goal[][] = {{1,2,3},{4,0,5},{6,7,8}};
+       /* int arr[][] = {{5,4,0},{6,1,8},{7,3,2}};
+        int goal[][] = {{1,2,3},{4,0,5},{6,7,8}};*/
         
-        //int arr[][] = {{7,2,4},{5,0,6},{8,3,1}};
-       // int goal[][] = {{0,1,2},{3,4,5},{6,7,8}};
+        int arr[][] = {{7,2,4},{5,0,6},{8,3,1}};
+        int goal[][] = {{0,1,2},{3,4,5},{6,7,8}};
         
         PriorityQueue<State> stateQueue = new PriorityQueue<State>(100, new Comparator<State>() {
             public int compare(State one, State two) {
                 return (one.fVal != two.fVal) ? (one.fVal - two.fVal) : one.noOfSuccesors - two.noOfSuccesors;
             }
         });
-        Set<State> clearState = new HashSet<State>();      
-        State inp = new State(arr,goal,0);
+        Set<State> clearState = new HashSet<State>();     
+        
+        State inp = new State(arr,goal,0,"");
         stateQueue.add(inp);
         int result =0;
         State presentState = new State();
         while(result != 1){
             presentState = stateQueue.poll();
             if(Arrays.deepEquals(presentState.blocks, goal)) { 
+                
+                printOutput(presentState,clearState,stateQueue);
                 result = 1;
             }else{
                 List<State> out = new ArrayList<State>();
@@ -42,22 +47,42 @@ public class MainClass {
                 stateQueue.addAll(out); 
             }
         }
-        
-        System.out.println(clearState.size());
-        System.out.println(clearState);
     }
 
-	private static List<State> removeClearState(List<State> out, Set<State> clearState) {
-		List<State> out1 = new ArrayList<State>();
-		out1.addAll(out);
-		// TODO Auto-generated method stub
-		for( State s : out1) {
-			if(clearState.contains(s)){
-				out.remove(s);
-			}
-		}
-		return out;
-		
-	}
+
+    private static void printOutput(State presentState, Set<State> clearState, PriorityQueue<State> stateQueue) {
+        // TODO Auto-generated method stub
+        List<State> printOut = new ArrayList<State>();
+        printOut.add(presentState);
+        while(!presentState.parentBlock.equals("")){
+            for( State s:clearState) {
+                if(s.blockString.equals(presentState.parentBlock)){
+                    printOut.add(s);
+                    presentState = s;
+                    break;
+                }
+            }
+        }
+        System.out.println("Total nodes in closed state " + clearState.size());
+        System.out.println("Total nodes expanded in this process " + (clearState.size() + stateQueue.size()));
+        System.out.println("The shortest path to reach the goal as follows ");
+        for(int i = printOut.size()-1;i>=0;i--) {
+            System.out.println(printOut.get(i));
+        }
+    }
+
+
+    private static List<State> removeClearState(List<State> out, Set<State> clearState) {
+        List<State> out1 = new ArrayList<State>();
+        out1.addAll(out);
+        // TODO Auto-generated method stub
+        for( State s : out1) {
+            if(clearState.contains(s)){
+                out.remove(s);
+            }
+        }
+        return out;
+        
+    }
 
 }
